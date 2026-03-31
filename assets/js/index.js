@@ -150,8 +150,9 @@ form.addEventListener("submit", function (e) {
   projects.push(newProject);
   console.log("Data Project saat ini:", projects);
 
-  // Menampilkan data ke html
+  //Menampilkan data Object ke HTML
   renderProjects();
+  form.reset();
 });
 
 // ======================================
