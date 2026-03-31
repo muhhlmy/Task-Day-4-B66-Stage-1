@@ -1,5 +1,5 @@
 // ======================================
-// VARIABLE
+// VARIABLES
 // ======================================
 const inputProjectName = document.getElementById("projectName");
 const inputProjectDescription = document.getElementById("projectDescription");
@@ -7,11 +7,12 @@ const inputProjectStartDate = document.getElementById("projectStartDate");
 const inputProjectEndDate = document.getElementById("projectEndDate");
 const inputProjectImage = document.getElementById("projectImage");
 const form = document.getElementById("projectForm");
-// Data array untuk menyimpan project yang kita buat
+
+// Wadah untuk menyimpan Object setiap Project
 let projects = [];
 
 // ======================================
-// FUNCTION
+// FUNCTIONS
 // ======================================
 function renderProjects() {
   const projectsContainer = document.getElementById("projectContainer");
@@ -20,9 +21,9 @@ function renderProjects() {
   if (projects.length === 0) {
     projectHTML = `
     <h5 class="text-center text-secondary w-100 mt-5">
-    Belum ada project saat ini.
-    <br>
-    Silakan tambahkan project baru di atas.
+      Belum ada project saat ini.
+      <br>
+      Silakan tambahkan project baru di atas.
     </h5>
     `;
   } else {
@@ -107,7 +108,7 @@ function calculateDurationReadable(startDate, endDate) {
 }
 
 // ======================================
-// EVENT HANDLER
+// EVENTS HANDLER
 // ======================================
 form.addEventListener("submit", function (e) {
   e.preventDefault();
@@ -154,6 +155,6 @@ form.addEventListener("submit", function (e) {
 });
 
 // ======================================
-// INITIALIZATION
+// INITIALIZATIONS
 // ======================================
 renderProjects();
