@@ -254,8 +254,6 @@ projectModal.addEventListener("click", function (e) {
     projectModal.classList.remove("d-flex");
     projectModal.classList.add("d-none");
   }
-  // Menampilkan data ke html
-  renderProjects();
 });
 
 // ======================================
