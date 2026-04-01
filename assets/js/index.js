@@ -10,6 +10,10 @@ const inputProjectEndDate = document.getElementById("projectEndDate");
 const inputProjectImage = document.getElementById("projectImage");
 // Body Form
 const form = document.getElementById("projectForm");
+// Insiasi Modal
+const projectContainerEL = document.getElementById("projectContainer");
+const projectModal = document.getElementById("projectModal");
+const closeModalBtn = document.getElementById("closeModalBtn");
 
 // Wadah buat menyimpan Object setiap Project
 let projects = [];
@@ -36,10 +40,9 @@ function renderProjects() {
     </h5>
     `;
   } else {
-    for (let i = 0; i < projects.length; i++) {
-      const project = projects[i];
-
+    projects.forEach((project) => {
       let techIconsHTML = "";
+
       if (project.techNodeJs == true) {
         techIconsHTML += '<i class="fa-brands fa-node-js fs-4 p-1"></i> ';
       }
@@ -52,53 +55,54 @@ function renderProjects() {
       if (project.techTypescript == true) {
         techIconsHTML += '<span class="fw-bold fs-6 p-1">TS</span> ';
       }
-
       projectHTML += `
-      <div class="col-12 col-md-6 col-lg-4 projectCard">
-        <div class="card h-100 shadow-sm border-0 rounded-4 p-3 bg-white">
-          <img
-            src="${project.image}"
-            class="card-img-top rounded-3"
-            alt="Project Image"
-            style="object-fit: cover; height: 200px"
-          />
-          <div class="card-body px-0 pb-0 text-start d-flex flex-column">
-            <a href="#" class="text-decoration-none text-dark">
-              <h5 class="card-title fw-bold mb-1">
+        <div class="col-12 col-md-6 col-lg-4 projectCard" data-id="${project.id}">
+          <div class="card h-100 shadow-sm border-0 rounded-4 p-3 bg-white">
+            <img
+              src="${project.image}"
+              class="card-img-top rounded-3"
+              alt="Project Image"
+              style="object-fit: cover; height: 200px"
+            />
+            <div class="card-body px-0 pb-0 text-start d-flex flex-column">
+              <h5 class="card-title fw-bold mb-1 text-decoration-none text-dark">
                 ${project.name}
               </h5>
-            </a>
-            <p class="text-secondary small mb-3">Duration: ${project.duration}</p>
-            <p
-              class="card-text text-secondary mb-4"
-              style="
-                display: -webkit-box;
-                -webkit-line-clamp: 3;
-                line-clamp: 3;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-              "
-            >
-              ${project.description}
-            </p>
-            
-            <div class="mb-3 text-secondary d-flex align-items-center gap-2">
-               ${techIconsHTML}
-            </div>
-
-            <div class="d-flex gap-2 w-100 mt-auto">
-              <button class="btn btn-outline-dark w-100 rounded-pill">
-                Edit
-              </button>
-              <button class="btn btn-dark w-100 rounded-pill">
-                Delete
-              </button>
+              <p class="text-secondary small mb-3">Duration: ${project.duration}</p>
+              <p
+                class="card-text text-secondary mb-4"
+                style="
+                  display: -webkit-box;
+                  -webkit-line-clamp: 3;
+                  line-clamp: 3;
+                  -webkit-box-orient: vertical;
+                  overflow: hidden;
+                "
+              >
+                ${project.description}
+              </p>
+              <div class="mb-3 text-secondary d-flex align-items-center gap-2">
+                 ${techIconsHTML}
+              </div>
+              <div class="d-flex gap-2 w-100 mt-auto">
+                <button 
+                  class="btn btn-outline-dark w-100 rounded-pill btn-view-details"
+                  data-id="${project.id}"
+                >
+                  View Details
+                </button>
+                <button 
+                  class="btn btn-dark w-50 rounded-pill btn-delete"
+                  data-id="${project.id}"
+                >
+                  Delete
+                </button> 
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    `;
-    }
+      `;
+    });
   }
 
   projectsContainer.innerHTML = projectHTML;
@@ -140,6 +144,7 @@ form.addEventListener("submit", function (e) {
       const imageUrl = reader.result; //Hasilnya ditaro disini
 
       const newProject = {
+        id: Date.now(),
         name: inputProjectName.value,
         description: inputProjectDescription.value,
         duration: calculateDurationReadable(
@@ -167,6 +172,7 @@ form.addEventListener("submit", function (e) {
     const imageUrl = `http://placehold.co/600x400?text=${inputProjectName.value}`; //Pakai Placeholder
 
     const newProject = {
+      id: Date.now(),
       name: inputProjectName.value,
       description: inputProjectDescription.value,
       duration: calculateDurationReadable(
@@ -186,6 +192,67 @@ form.addEventListener("submit", function (e) {
     form.reset();
 
     console.log("Data Project:", projects);
+  }
+});
+
+// Kalo View Details di Klik
+projectContainerEL.addEventListener("click", function (e) {
+  console.log(e);
+  if (e.target.classList.contains("btn-view-details")) {
+    const projectId = e.target.getAttribute("data-id");
+    console.log(projectId);
+    const project = projects.find((p) => p.id == projectId);
+
+    if (project) {
+      document.getElementById("modalTitle").textContent = project.name;
+      document.getElementById("modalImage").src = project.image;
+      document.getElementById("modalDuration").textContent = project.duration;
+      document.getElementById("modalDescription").textContent =
+        project.description;
+
+      let techIconsHTML = "";
+      if (project.techNodeJs)
+        techIconsHTML += '<i class="fa-brands fa-node-js fs-4 p-1"></i> ';
+      if (project.techNextJs)
+        techIconsHTML += '<span class="fw-bold fs-6 p-1">Next.JS</span> ';
+      if (project.techReactJs)
+        techIconsHTML += '<i class="fa-brands fa-react fs-4 p-1"></i> ';
+      if (project.techTypescript)
+        techIconsHTML += '<span class="fw-bold fs-6 p-1">TS</span> ';
+
+      document.getElementById("modalTechnologies").innerHTML = techIconsHTML;
+
+      // Tampilkan Modal
+      projectModal.classList.remove("d-none");
+      projectModal.classList.add("d-flex");
+    }
+  } else if (e.target.classList.contains("btn-delete")) {
+    // Ambil data-id yang di Klik
+    const projectId = e.target.getAttribute("data-id");
+
+    if (confirm("Yakin ingin menghapus Project Ini?")) {
+      // Cari Project yang id nya sama dengan data-id yang di Klik
+      projects = projects.filter((item) => item.id != projectId);
+
+      saveToLocalStorage();
+      renderProjects();
+    } else {
+      return;
+    }
+  }
+});
+
+// Tutup Modal
+closeModalBtn.addEventListener("click", function () {
+  projectModal.classList.remove("d-flex");
+  projectModal.classList.add("d-none");
+});
+
+// Tutup Modal di Body Modal
+projectModal.addEventListener("click", function (e) {
+  if (e.target === projectModal) {
+    projectModal.classList.remove("d-flex");
+    projectModal.classList.add("d-none");
   }
 });
 
