@@ -19,3 +19,12 @@ body {
 #contact {
   min-height: calc(100vh - 56px);
 }
+
+.divider {
+  width: 10%;
+  height: 3px;
+}
+
+::-webkit-scrollbar {
+  width: 0px; /* makin kecil = makin tipis */
+}
