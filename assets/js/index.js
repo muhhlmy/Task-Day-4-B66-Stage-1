@@ -1,15 +1,24 @@
 // ======================================
 // VARIABLES
 // ======================================
+// Ambil Input
 const inputProjectName = document.getElementById("projectName");
 const inputProjectDescription = document.getElementById("projectDescription");
 const inputProjectStartDate = document.getElementById("projectStartDate");
 const inputProjectEndDate = document.getElementById("projectEndDate");
+// Ambil Image
 const inputProjectImage = document.getElementById("projectImage");
+// Body Form
 const form = document.getElementById("projectForm");
 
-// Wadah untuk menyimpan Object setiap Project
+// Wadah buat menyimpan Object setiap Project
 let projects = [];
+
+//Kalo ada data di Local Storage, Ambil
+const savedProjects = localStorage.getItem("projects");
+if (savedProjects) {
+  projects = JSON.parse(savedProjects);
+}
 
 // ======================================
 // FUNCTIONS
@@ -107,52 +116,77 @@ function calculateDurationReadable(startDate, endDate) {
   return `${months} bulan`;
 }
 
+// Untuk nyimpen di LocalStorage
+function saveToLocalStorage() {
+  localStorage.setItem("projects", JSON.stringify(projects));
+}
+
 // ======================================
 // EVENTS HANDLER
 // ======================================
+
+// Kalo Form di Submit
 form.addEventListener("submit", function (e) {
   e.preventDefault();
-
-  //Ambil nilai checked (true/false) dari checkbox teknologi
-  let nodejs = document.getElementById("nodejs").checked;
-  let nextjs = document.getElementById("nextjs").checked;
-  let reactjs = document.getElementById("reactjs").checked;
-  let typescript = document.getElementById("typescript").checked;
-
-  //Image Handler
+  // Ambil gambar yang di Upload
   let imageFile = inputProjectImage.files[0];
-  let imageUrl = "";
 
+  // Kalo ada gambar
   if (imageFile) {
-    imageUrl = URL.createObjectURL(imageFile);
+    const reader = new FileReader();
+
+    // Kalo udah selesai baca File
+    reader.onload = function () {
+      const imageUrl = reader.result; //Hasilnya ditaro disini
+
+      const newProject = {
+        name: inputProjectName.value,
+        description: inputProjectDescription.value,
+        duration: calculateDurationReadable(
+          inputProjectStartDate.value,
+          inputProjectEndDate.value,
+        ),
+        techNodeJs: document.getElementById("nodejs").checked,
+        techNextJs: document.getElementById("nextjs").checked,
+        techReactJs: document.getElementById("reactjs").checked,
+        techTypescript: document.getElementById("typescript").checked,
+        image: imageUrl,
+      };
+
+      projects.push(newProject);
+      saveToLocalStorage();
+      renderProjects();
+
+      form.reset();
+      console.log("Data Project:", projects);
+    };
+
+    reader.readAsDataURL(imageFile); //Baca File yang di Upload
   } else {
-    imageUrl = `http://placehold.co/600x400?text=${inputProjectName.value}`;
+    // Kalo gaada Gambar
+    const imageUrl = `http://placehold.co/600x400?text=${inputProjectName.value}`; //Pakai Placeholder
+
+    const newProject = {
+      name: inputProjectName.value,
+      description: inputProjectDescription.value,
+      duration: calculateDurationReadable(
+        inputProjectStartDate.value,
+        inputProjectEndDate.value,
+      ),
+      techNodeJs: document.getElementById("nodejs").checked,
+      techNextJs: document.getElementById("nextjs").checked,
+      techReactJs: document.getElementById("reactjs").checked,
+      techTypescript: document.getElementById("typescript").checked,
+      image: imageUrl,
+    };
+
+    projects.push(newProject);
+    saveToLocalStorage();
+    renderProjects();
+    form.reset();
+
+    console.log("Data Project:", projects);
   }
-
-  //Menyimpan Object ke dalam Projects
-  const newProject = {
-    name: inputProjectName.value,
-    description: inputProjectDescription.value,
-    duration: calculateDurationReadable(
-      inputProjectStartDate.value,
-      inputProjectEndDate.value,
-    ),
-    //Menyimpan nilai true/false dari tangkapan checkbox
-    techNodeJs: nodejs,
-    techNextJs: nextjs,
-    techReactJs: reactjs,
-    techTypescript: typescript,
-    //Menyimpan Gambar
-    image: imageUrl,
-  };
-
-  //Masukkan data baru ke Projects
-  projects.push(newProject);
-  console.log("Data Project saat ini:", projects);
-
-  //Menampilkan data Object ke HTML
-  renderProjects();
-  form.reset();
 });
 
 // ======================================
