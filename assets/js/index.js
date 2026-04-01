@@ -210,7 +210,6 @@ projectContainerEL.addEventListener("click", function (e) {
       document.getElementById("modalDescription").textContent =
         project.description;
 
-<<<<<<< HEAD
       let techIconsHTML = "";
       if (project.techNodeJs)
         techIconsHTML += '<i class="fa-brands fa-node-js fs-4 p-1"></i> ';
@@ -255,10 +254,8 @@ projectModal.addEventListener("click", function (e) {
     projectModal.classList.remove("d-flex");
     projectModal.classList.add("d-none");
   }
-=======
   // Menampilkan data ke html
   renderProjects();
->>>>>>> parent of 06f4fd8 (Update form submission handler to reset the form after adding a project)
 });
 
 // ======================================
