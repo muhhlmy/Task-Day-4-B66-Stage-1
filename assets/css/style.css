@@ -28,3 +28,11 @@ body {
 ::-webkit-scrollbar {
   width: 0px; /* makin kecil = makin tipis */
 }
+
+.projectCard {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.projectCard:hover {
+  transform: translateY(-5px);
+}
